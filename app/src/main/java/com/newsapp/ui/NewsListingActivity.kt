@@ -1,9 +1,10 @@
-package com.newsapp
+package com.newsapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.newsapp.R
 
-class MainActivity : AppCompatActivity() {
+class NewsListingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
