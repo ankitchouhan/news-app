@@ -22,15 +22,13 @@ class NewsListingAdapter :
     companion object {
         private val ARTICLE_COMPARATOR = object : DiffUtil.ItemCallback<ArticleEntity>() {
             override fun areItemsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity): Boolean =
-                oldItem.id == newItem.id
+                oldItem.url == newItem.url
 
             override fun areContentsTheSame(
                 oldItem: ArticleEntity,
                 newItem: ArticleEntity
             ): Boolean =
                 oldItem == newItem
-
-
         }
     }
 }

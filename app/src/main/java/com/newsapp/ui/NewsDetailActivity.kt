@@ -30,6 +30,9 @@ class NewsDetailActivity : AppCompatActivity() {
                 android.R.color.transparent
             )
         )
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         article?.let {
             collapsingToolbar.title = it.headline ?: ""
             headline.text = it.headline ?: ""

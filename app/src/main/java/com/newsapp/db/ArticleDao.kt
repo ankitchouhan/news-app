@@ -16,7 +16,7 @@ interface ArticleDao {
     @Query("DELETE FROM articles")
     fun clearTable()
 
-    @Query("SELECT * FROM articles ORDER BY id ASC")
+    @Query("SELECT * FROM articles")
     fun getArticles(): DataSource.Factory<Int, ArticleEntity>
 
     @Transaction

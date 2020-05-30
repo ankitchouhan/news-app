@@ -13,8 +13,10 @@ class NewsListingRepository(
     private val articleLocalCache: ArticleLocalCache
 ) {
 
+    private var boundaryCallback: NewsBoundaryCallback? = null
+
     companion object {
-        private const val DATABASE_PAGE_SIZE = 10
+        private const val DATABASE_PAGE_SIZE = 20
     }
 
     /**
@@ -28,13 +30,20 @@ class NewsListingRepository(
         // create a new BoundaryCallback
         // The BoundaryCallback will observe when the user reaches to the edges of
         // the list and update the database with extra data
-        val boundaryCallback = NewsBoundaryCallback(apiService, articleLocalCache)
-        val networkErrors = boundaryCallback.networkErrors
+        boundaryCallback = NewsBoundaryCallback(apiService, articleLocalCache)
+        val networkErrors = boundaryCallback?.networkErrors
 
         val data = LivePagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE)
             .setBoundaryCallback(boundaryCallback)
             .build()
 
         return NewsResult(data, networkErrors)
+    }
+
+    /**
+     * Refresh news headlines.
+     * */
+    fun refresh() {
+        boundaryCallback?.requestAndSaveData(1)
     }
 }

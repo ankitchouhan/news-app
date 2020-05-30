@@ -3,6 +3,8 @@ package com.newsapp.utilities
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
 object Utils {
 
@@ -22,5 +24,18 @@ object Utils {
             e.printStackTrace()
         }
         return ""
+    }
+
+    @ExperimentalTime
+    fun getDateDiff(oldDate: Long, newDate: Long): Long {
+        return try {
+            DurationUnit.HOURS.convert(
+                newDate - oldDate,
+                DurationUnit.MILLISECONDS
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
     }
 }

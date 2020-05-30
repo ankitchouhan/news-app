@@ -3,6 +3,7 @@ package com.newsapp.api
 import android.util.Log
 import com.newsapp.models.Article
 import com.newsapp.models.NewsListResponse
+import com.newsapp.utilities.API_KEY
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,6 +68,7 @@ interface ApiService {
     fun getTopHeadlines(
         @Query("country") country: String = "in",
         @Query("pageSize") pageSize: Int,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("apiKey") apiKey: String = API_KEY
     ): Call<NewsListResponse>
 }

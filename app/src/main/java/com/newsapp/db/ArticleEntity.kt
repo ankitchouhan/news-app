@@ -3,13 +3,12 @@ package com.newsapp.db
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "articles")
+@Entity(tableName = "articles", primaryKeys = ["url"])
 data class ArticleEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "headline") val headline: String?,
     @ColumnInfo(name = "image") val image: String?,
     @ColumnInfo(name = "description") val description: String?,

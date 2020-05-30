@@ -23,7 +23,7 @@ class NewsBoundaryCallback(
     }
 
     // keep the last requested page. When the request is successful, increment the page number.
-    private var lastRequestedPage = 1
+    private var lastRequestedPage = articleLocalCache.getLastFetchedPage()
 
     private val _networkErrors = MutableLiveData<String>()
 
@@ -42,7 +42,7 @@ class NewsBoundaryCallback(
      */
     override fun onZeroItemsLoaded() {
         Log.d("BoundaryCallback", "onZeroItemsLoaded")
-        requestAndSaveData()
+        requestAndSaveData(lastRequestedPage)
     }
 
     /**
@@ -50,10 +50,11 @@ class NewsBoundaryCallback(
      */
     override fun onItemAtEndLoaded(itemAtEnd: ArticleEntity) {
         Log.d("BoundaryCallback", "onItemAtEndLoaded")
-        requestAndSaveData()
+        requestAndSaveData(lastRequestedPage)
     }
 
-    private fun requestAndSaveData() {
+    fun requestAndSaveData(page: Int) {
+        lastRequestedPage = page
         if (isRequestInProgress) return
         isRequestInProgress = true
 
@@ -64,6 +65,7 @@ class NewsBoundaryCallback(
                 totalResultAvailable = totalResults
                 val list = articles.map { article ->
                     ArticleEntity(
+                        url = article.url,
                         headline = article.title,
                         image = article.urlToImage,
                         description = article.description,
@@ -71,9 +73,19 @@ class NewsBoundaryCallback(
                         publishTime = article.publishedAt
                     )
                 }
-                articleLocalCache.insert(list) {
-                    lastRequestedPage++
-                    isRequestInProgress = false
+                if (lastRequestedPage == 1) {
+                    articleLocalCache.clearAndInsert(list) {
+                        articleLocalCache.updateLastFetchTime()
+                        articleLocalCache.updateLastFetchedPage(lastRequestedPage)
+                        lastRequestedPage++
+                        isRequestInProgress = false
+                    }
+                } else {
+                    articleLocalCache.insert(list) {
+                        articleLocalCache.updateLastFetchedPage(lastRequestedPage)
+                        lastRequestedPage++
+                        isRequestInProgress = false
+                    }
                 }
             },
             { error ->

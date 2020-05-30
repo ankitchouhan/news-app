@@ -3,8 +3,8 @@ package com.newsapp.utilities
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.newsapp.api.ApiService
-import com.newsapp.api.ClientAuthInterceptor
 import com.newsapp.data.NewsListingRepository
+import com.newsapp.db.AppSharedPreference
 import com.newsapp.db.ArticleLocalCache
 import com.newsapp.db.NewsDatabase
 import com.newsapp.viewmodels.ViewModelFactory
@@ -21,13 +21,20 @@ object InjectorUtils {
      * Create an instance of [ApiService] based on the interceptor.
      * */
     private fun provideApiService(): ApiService {
-        okHttpClient.addInterceptor(ClientAuthInterceptor())
+        //okHttpClient.addInterceptor(ClientAuthInterceptor())
         return Retrofit.Builder()
             .baseUrl(ApiService.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient.build())
+            //.client(okHttpClient.build())
             .build()
             .create(ApiService::class.java)
+    }
+
+    /**
+     * Create an instance of [AppSharedPreference] based on the application context.
+     * */
+    fun provideSharedPreference(context: Context): AppSharedPreference {
+        return AppSharedPreference.getInstance(context.applicationContext)
     }
 
     /**
@@ -35,7 +42,12 @@ object InjectorUtils {
      * */
     private fun provideArticleCache(context: Context): ArticleLocalCache {
         val database = NewsDatabase.getInstance(context)
-        return ArticleLocalCache(database.articlesDao(), Executors.newSingleThreadExecutor())
+        val sharedPreferences = provideSharedPreference(context)
+        return ArticleLocalCache(
+            database.articlesDao(),
+            sharedPreferences,
+            Executors.newSingleThreadExecutor()
+        )
     }
 
     /**
