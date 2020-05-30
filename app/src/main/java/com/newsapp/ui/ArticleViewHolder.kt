@@ -1,5 +1,6 @@
 package com.newsapp.ui
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.newsapp.R
 import com.newsapp.db.ArticleEntity
+import com.newsapp.utilities.KEY_ARTICLE
 import com.newsapp.utilities.Utils
 
 /**
@@ -20,6 +22,8 @@ class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val source: TextView = itemView.findViewById(R.id.source)
     private val publishDate: TextView = itemView.findViewById(R.id.publishDate)
 
+    private var article: ArticleEntity? = null
+
     companion object {
         fun create(parentView: ViewGroup): ArticleViewHolder {
             val view = LayoutInflater.from(parentView.context)
@@ -30,11 +34,16 @@ class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     init {
         itemView.setOnClickListener {
-
+            article?.let {
+                val intent = Intent(itemView.context, NewsDetailActivity::class.java)
+                    .putExtra(KEY_ARTICLE, it)
+                itemView.context.startActivity(intent)
+            }
         }
     }
 
     fun bind(article: ArticleEntity) {
+        this.article = article
         showData(article)
     }
 
