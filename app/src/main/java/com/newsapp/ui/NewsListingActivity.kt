@@ -36,6 +36,9 @@ class NewsListingActivity : AppCompatActivity() {
         initObservers()
     }
 
+    /**
+     * refresh headlines after every 2 hours.
+     * */
     @ExperimentalTime
     private fun readLastFetchTime() {
         val sharedPref = InjectorUtils.provideSharedPreference(this)

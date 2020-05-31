@@ -12,6 +12,9 @@ class NewsListingViewModel(private val repository: NewsListingRepository) : View
     val articles: LiveData<PagedList<ArticleEntity>> = newsResult.articleData
     val networkError: LiveData<String>? = newsResult.networkErrors
 
+    /**
+     * refresh headlines after every 2 hours.
+     * */
     fun refreshHeadlines() {
         repository.refresh()
     }
